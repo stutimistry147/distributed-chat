@@ -1,28 +1,31 @@
-const socket = io(); // Connect to the backend
-
+// References to DOM elements
 const messagesDiv = document.getElementById('messages');
-const chatForm = document.getElementById('chat-form');
 const messageInput = document.getElementById('message-input');
+const sendButton = document.getElementById('send-button');
 
-// Append a message to the messages div
-function appendMessage(message, isMine) {
-  const messageElement = document.createElement('div');
-  messageElement.textContent = message;
-  messageElement.style.textAlign = isMine ? 'right' : 'left';
-  messagesDiv.appendChild(messageElement);
-  messagesDiv.scrollTop = messagesDiv.scrollHeight; // Auto-scroll
-}
+// Handle sending messages
+sendButton.addEventListener('click', () => {
+    const message = messageInput.value.trim();
+    if (message) {
+        // Display the sent message
+        const sentMessage = document.createElement('div');
+        sentMessage.className = 'message sent';
+        sentMessage.textContent = message;
+        messagesDiv.appendChild(sentMessage);
 
-// Handle new messages from the backend
-socket.on('message', (data) => {
-  appendMessage(data, false);
-});
+        // Scroll to the bottom of the messages container
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
-// Send a message to the backend
-chatForm.addEventListener('submit', (event) => {
-  event.preventDefault();
-  const message = messageInput.value;
-  appendMessage(message, true);
-  socket.emit('message', message); // Emit the message to the server
-  messageInput.value = '';
+        // Clear the input field
+        messageInput.value = '';
+
+        // Simulate a response from another user (replace with backend integration)
+        setTimeout(() => {
+            const receivedMessage = document.createElement('div');
+            receivedMessage.className = 'message received';
+            receivedMessage.textContent = 'This is a simulated reply!';
+            messagesDiv.appendChild(receivedMessage);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }, 1000);
+    }
 });
